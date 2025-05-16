@@ -24,7 +24,7 @@ type User struct {
 type Person struct {
 	Name       string   `json:"full_name"`
 	Age        int      `json:"years_old,omitempty"`
-	Occupation string   `json:"occupation,-"`
+	Occupation string   `json:"-"`
 	Languages  []string `json:"spoken_languages"`
 }
 
