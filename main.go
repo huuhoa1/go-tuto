@@ -3,15 +3,16 @@ package main
 import (
 	"fmt"
 	"io"
-	"os"
+	"strings"
 )
 
 func main() {
-	f, err := os.Open("letters.txt")
+	/* f, err := os.Open("letters.txt")
 	if err != nil {
 		panic(err)
-	}
-	n, err := countAlphabets(f)
+	} */
+	r := strings.NewReader("Hello worldddd")
+	n, err := countAlphabets(r)
 	if err != nil {
 		panic(err)
 	}
