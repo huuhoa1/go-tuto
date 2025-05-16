@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 )
 
 /* {
@@ -22,37 +23,29 @@ type User struct {
 }
 
 type Person struct {
-	Name       string   `json:"full_name"`
-	Age        int      `json:"years_old,omitempty"`
-	Occupation string   `json:"-"`
-	Languages  []string `json:"spoken_languages"`
+	Name   string `json:"username"`
+	Age    int    `json:"age"`
+	Active bool   `json:"is_active"`
 }
 
 func main() {
-	jsonData := `{"full_name":"Jane Doe", "years_old":25, "spoken_languages":["French","English"], "occupation":"teacher"}` //`` syntax to avoid \"
+	person := Person{
+		Name:   "Can Huynh",
+		Age:    59,
+		Active: true,
+	}
 
-	var person Person
-	err := json.Unmarshal([]byte(jsonData), &person)
+	f, err := os.Create("output.json")
 	if err != nil {
-		fmt.Println("Error unmarshalling JSON:", err)
+		fmt.Println("Error creating file!", err)
 		panic(err)
 	}
-	fmt.Println("Name", person.Name)
-	fmt.Println("Age", person.Age)
-	fmt.Println("Languages", person.Languages)
-	fmt.Println("Occupation", person.Occupation)
+	defer f.Close()
 
-	/* u := User{
-		ID:          1,
-		Name:        "Can Huynh",
-		Age:         20,
-		Password:    "my-password",
-		Permissions: []string{"admin", "group-member"},
-	}
-	b, err := json.Marshal(u)
+	encoder := json.NewEncoder(f) // takes as parameter a pointer to a struct that implements io.Writer
+	err = encoder.Encode(person)  //serialize the object; encode the object in characters
 	if err != nil {
-		fmt.Println("error marshalling JSON: ", err)
+		fmt.Println("Error encoding person:", err)
 		panic(err)
 	}
-	fmt.Println(string(b)) */
 }
