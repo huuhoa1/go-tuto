@@ -29,7 +29,7 @@ type Person struct {
 }
 
 func main() {
-	person := Person{
+	/* person := Person{
 		Name:   "Can Huynh",
 		Age:    59,
 		Active: true,
@@ -47,5 +47,20 @@ func main() {
 	if err != nil {
 		fmt.Println("Error encoding person:", err)
 		panic(err)
+	} */
+	var p Person
+	f, err := os.Open("output.json")
+	if err != nil {
+		fmt.Println("Error reading file!", err)
+		panic(err)
 	}
+	defer f.Close()
+
+	decoder := json.NewDecoder(f)
+	err = decoder.Decode(&p)
+	if err != nil {
+		fmt.Println("Error decoding person:", err)
+		panic(err)
+	}
+	fmt.Println(p)
 }
