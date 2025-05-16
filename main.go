@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"io"
-	"strings"
+	"os"
 )
 
 func main() {
@@ -11,30 +11,30 @@ func main() {
 	if err != nil {
 		panic(err)
 	} */
-	r := strings.NewReader("Hello worldddd")
+	/* r := strings.NewReader("Hello worldddd")
 	n, err := countAlphabets(r)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("Letters: %d\n", n)
+	fmt.Printf("Letters: %d\n", n) */
+	f, err := os.Create("writing.txt")
+	if err != nil {
+		panic(err)
+	}
+	defer (*f).Close()
+
+	n, err := writeString("Hello Can Huynh!", f)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf("written bytes: %d\n", n)
+
 }
 
-func countAlphabets(r io.Reader) (int, error) {
-	count := 0
-	buffer := make([]byte, 1024)
-
-	for {
-		n, err := r.Read(buffer)       // infinite loop, read 1024 chars at a time
-		for _, l := range buffer[:n] { //loop on the n chars read
-			if (l >= 'A' && l <= 'Z') || (l >= 'a' && l <= 'z') {
-				count++
-			}
-		}
-		if err == io.EOF {
-			return count, nil
-		}
-		if err != nil {
-			return 0, err
-		}
+func writeString(s string, w io.Writer) (int, error) {
+	n, err := w.Write([]byte(s))
+	if err != nil {
+		return 0, fmt.Errorf("error occurred while writing: %w", err)
 	}
+	return n, nil
 }
