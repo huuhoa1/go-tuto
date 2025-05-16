@@ -1,40 +1,58 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
-	"io"
-	"os"
 )
 
-func main() {
-	/* f, err := os.Open("letters.txt")
-	if err != nil {
-		panic(err)
-	} */
-	/* r := strings.NewReader("Hello worldddd")
-	n, err := countAlphabets(r)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Printf("Letters: %d\n", n) */
-	f, err := os.Create("writing.txt")
-	if err != nil {
-		panic(err)
-	}
-	defer (*f).Close()
+/* {
+	"user_id": 12345,
+	"name":"User A",
+	"age": 35,
+	"password": "my-password",
+	"roles": ["admin", "collaborator"]
+} */
 
-	n, err := writeString("Hello Can Huynh!", f)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Printf("written bytes: %d\n", n)
-
+type User struct {
+	ID          int      `json:"user_id"`
+	Name        string   `json:"name,omitempty"`
+	Age         int      `json:"age"`
+	Password    string   `json:"-"`
+	Permissions []string `json:"roles"`
 }
 
-func writeString(s string, w io.Writer) (int, error) {
-	n, err := w.Write([]byte(s))
+type Person struct {
+	Name       string   `json:"full_name"`
+	Age        int      `json:"years_old,omitempty"`
+	Occupation string   `json:"occupation,-"`
+	Languages  []string `json:"spoken_languages"`
+}
+
+func main() {
+	jsonData := `{"full_name":"Jane Doe", "years_old":25, "spoken_languages":["French","English"], "occupation":"teacher"}` //`` syntax to avoid \"
+
+	var person Person
+	err := json.Unmarshal([]byte(jsonData), &person)
 	if err != nil {
-		return 0, fmt.Errorf("error occurred while writing: %w", err)
+		fmt.Println("Error unmarshalling JSON:", err)
+		panic(err)
 	}
-	return n, nil
+	fmt.Println("Name", person.Name)
+	fmt.Println("Age", person.Age)
+	fmt.Println("Languages", person.Languages)
+	fmt.Println("Occupation", person.Occupation)
+
+	/* u := User{
+		ID:          1,
+		Name:        "Can Huynh",
+		Age:         20,
+		Password:    "my-password",
+		Permissions: []string{"admin", "group-member"},
+	}
+	b, err := json.Marshal(u)
+	if err != nil {
+		fmt.Println("error marshalling JSON: ", err)
+		panic(err)
+	}
+	fmt.Println(string(b)) */
 }
